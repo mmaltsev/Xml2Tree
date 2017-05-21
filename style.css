@@ -1,0 +1,46 @@
+div.top {
+	text-align: center;
+}
+div > h1 {
+	display: inline;
+}
+div.authors {
+	display: inline-block;
+	max-width: 28%;
+	font-size: smaller;
+}
+div.mentor {
+	text-align: right;
+}
+div.content {
+	text-align: center;
+	margin-top: 3%;
+	margin-left: 20%;
+	margin-right: 20%;
+}
+div.floor {
+	position: fixed;
+	bottom: 0px;
+	text-align: right;
+	width: 100%;
+}
+div > a > img {
+	width: 12%;
+	height: 12%;
+}
+.node {
+      cursor: pointer;
+    }
+.node circle {
+  fill: #00008b;
+  stroke: black;
+  stroke-width: 3px;
+}
+.node text {
+  font: 12px sans-serif;
+}
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
