@@ -1,6 +1,7 @@
 function drawTree(selectString, treeData, maxDepth, maxWidth) {
+	var start = new Date().getTime();
 	var margin = {top: 20, right: 120, bottom: 20, left: 120},
-		width = maxWidth*300 - margin.right - margin.left,
+		width = maxWidth*400 - margin.right - margin.left,
 		height = maxDepth*50 - margin.top - margin.bottom;
 		
 	var i = 0,
@@ -9,7 +10,11 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 	
 	var tree = d3.layout.tree()
 		.size([height, width])
-		.children(function(d) { return d.children; });
+		.children(
+			function(d) { 
+				return d.children; 
+			}
+		);
 	
 	var diagonal = d3.svg.diagonal()
 		.projection(function(d) { return [d.y, d.x]; });
@@ -20,16 +25,17 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 	.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 	
-	
 	root = treeData[0];
 	root.x0 = height / 2;
 	root.y0 = 0;
 	
 	function collapse(d) {
 		if (d.children) {
-		d._children = d.children;
-		d._children.forEach(collapse);
-		d.children = null;
+			if (d.children.length) {
+				d._children = d.children;
+				d._children.forEach(collapse);
+				d.children = null;
+			}
 		}
 	}
 	
@@ -46,9 +52,9 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 		links = tree.links(nodes);
 	
 	// Normalize for fixed-depth.
-	nodes.forEach(function(d) { d.y = d.depth * 240; });
+	nodes.forEach(function(d) { d.y = d.depth * 300; });
 	
-	// Update the nodes…
+	// Update the nodes
 	var node = svg.selectAll("g.node")
 		.data(nodes, function(d) { return d.ids || (d.ids = ++i); });
 	
@@ -60,45 +66,55 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 	
 	nodeEnter.append("circle")
 		.attr("r", 1e-6)
-		.style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+		.style("fill", function(d) { 
+			return d._children ? "lightsteelblue" : "#fff"; 
+		}); //#fff
 	
 	function wordwrap2(text) {
-	return text.split(" ")
+		return text.split(" ")
 	}   
 	
 	nodeEnter.append("text")
 	.attr("x", function(d) { return d.children || d._children ? -10 : 10; })
 	.attr("dy", ".35em")
-	//.attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
 	.style("fill-opacity", 1e-6)
 	.each(function (d) {
-		if (d.name != undefined) {
-			var lines = wordwrap2(d.name)
-			for (var i = 0; i < lines.length; i++) {
-				if (i == 0) { // if that's the first line - make it bold
-					if (d.value != "" && d.value != undefined) {
-						d3.select(this).append("tspan")
-							.attr("style", "font-weight: bold")
-							.attr("dy",23)
-							.attr("x",function(d) { 
-								return d.children || d._children ? -10 : 10; })
-							.text(lines[i] + " \"" + d.value + "\"")
-					} else {
-						d3.select(this).append("tspan")
-							.attr("style", "font-weight: bold")
-							.attr("dy",23)
-							.attr("x",function(d) { 
-								return d.children || d._children ? -10 : 10; })
-							.text(lines[i])
-					}
-				} else { // otherwise small font
-					d3.select(this).append("tspan")
-						.attr("style", "font: 8px sans-serif;")
-						.attr("dy",13)
-						.attr("x",function(d) { 
-							return d.children || d._children ? -10 : 10; })
-						.text(lines[i])
-				}
+		var lines = [];
+		var index = 0;
+		if (d.value) {
+			lines[index] = d.value;
+			index += 1;
+		}
+		if (d.name) {
+			lines[index] = d.name;
+			index += 1;
+		}
+		if (d.extra) {
+			lines[index] = d.extra;
+			index += 1;
+		}
+		if (d.type) {
+			lines[index] = d.type;
+			index += 1;
+		}
+		if (!index) {
+			lines[index] = "UnknownNode";
+		}
+		for (var i = 0; i < lines.length; i++) {
+			if (i == 0) { // if that's the first line - make it bold
+				d3.select(this).append("tspan")
+					.attr("style", "font-weight: bold")
+					.attr("dy",23)
+					.attr("x",function(d) { 
+						return d.children || d._children ? -10 : 10; })
+					.text(lines[i])
+			} else { // otherwise small font
+				d3.select(this).append("tspan")
+					.attr("style", "font: 8px sans-serif;")
+					.attr("dy",13)
+					.attr("x",function(d) { 
+						return d.children || d._children ? -10 : 10; })
+					.text(lines[i])
 			}
 		}
 	}); 
@@ -110,7 +126,9 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 	
 	nodeUpdate.select("circle")
 		.attr("r", 4.5)
-		.style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+		.style("fill", function(d) { 
+			return d._children ? "lightsteelblue" : "#fff"; 
+		}); //#fff
 	
 	nodeUpdate.select("text")
 		.style("fill-opacity", 1);
@@ -171,4 +189,6 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 	}
 	update(d);
 	}
+	var elapsed = new Date().getTime() - start;
+    console.log("Function drawTree time "+elapsed);
 }

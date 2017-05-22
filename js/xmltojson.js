@@ -1,11 +1,21 @@
-function xmltotree(divClass, file, JSONRaw) {
-	if (JSONText) {
-		var JSONText = readTextFile(file);
-		drawTree(divClass, JSONText, 100, 100);
+function xmltotree(divClass, file, impNodes, impAttr, ifJSON) {
+	if (ifJSON) {
+		var newText = readTextFile(file);
+		var newObj = JSON.parse(newText);
+		var mapArray = JSONToArray(newObj);
+		var JSONText = arrayToJSON(mapArray);  // converts array into a JSON file
+		if (newObj.results.bindings.length > 4) {
+			drawTree(divClass, JSONText, newObj.results.bindings.length*2, 5);
+			//return "good";
+		} else {
+			drawTree(divClass, JSONText, 6, 5);
+			//return "good";
+		}
 	} else {
 		var XMLText = readTextFile(file);
 		var tagArray = XMLToArray(XMLText);  // returns an array of all nodes with related info
-		var JSONText = ArrayToJSON(tagArray);  // converts an array into a JSON file
+		var mapArray = arrayMapping(tagArray, impNodes, impAttr)
+		var JSONText = arrayToJSON(mapArray);  // converts array into a JSON file
 		var maxDepth = 0;  // we evaluate the maxDepth of the tree in order to draw a frame for it
 		var maxWidth = 0;  // we evaluate the maxWidth of the tree in order to draw a frame for it
 		var depthArray = [];
@@ -22,6 +32,7 @@ function xmltotree(divClass, file, JSONRaw) {
 		maxDepth = Math.max.apply(null, depthArray);
 		divClass = "."+divClass;
 		drawTree(divClass, JSONText, maxDepth, maxWidth);
+		//return "good";
 	}
 }
 
@@ -38,6 +49,56 @@ function readTextFile(file){
 	}
 	rawFile.send(null);
 	return allText;
+}
+
+function objInit(id, parent, children, depth, name, tag, type, value, extra) {  // object initializing
+	var obj = new Object();
+	obj.id = id;
+	obj.parent = parent;
+	obj.children = children;
+	obj.depth = depth;	
+	obj.name = name;
+	obj.tag = tag;
+	obj.type = type;
+	obj.value = value;
+	obj.extra = extra;
+	return obj;
+}
+
+function JSONToArray(newObj) {  // creating an array of all objects that needed to be visualized
+	var totalIdNum = 1;
+	var mapArray = [];
+	var rootObj = new Object();
+	rootObj = objInit(totalIdNum, 0, [], 0, 'results', '', '', '', '');
+	mapArray.push(rootObj);
+	for (var i=0; i<newObj.results.bindings.length; i++) {
+		var depth = 1;
+		if (newObj.results.bindings[i].s) {  //subject
+			totalIdNum += 1;
+			rootObj.children.push(totalIdNum);
+			var subjectObj = new Object();
+			subjectObj = objInit(totalIdNum, 1, [], depth, "subject", '', newObj.results.bindings[i].s.type, newObj.results.bindings[i].s.value, '');
+			mapArray.push(subjectObj);
+			depth += 1;
+		}
+		if (newObj.results.bindings[i].p) {  // predicate
+			totalIdNum += 1;
+			subjectObj.children.push(totalIdNum);
+			var predicatObj = new Object();
+			predicatObj = objInit(totalIdNum, totalIdNum-1, [], depth, "predicate", '', newObj.results.bindings[i].p.type, newObj.results.bindings[i].p.value, '');
+			mapArray.push(predicatObj);
+			depth += 1;
+		}
+		if (newObj.results.bindings[i].o) {  // object
+			totalIdNum += 1;
+			predicatObj.children.push(totalIdNum);
+			var objectObj = new Object();
+			objectObj = objInit(totalIdNum, totalIdNum-1, [], depth, "object", '', newObj.results.bindings[i].o.type, newObj.results.bindings[i].o.value, '');
+			mapArray.push(objectObj);
+			depth += 1;
+		}
+	}
+	return mapArray
 }
 			
 function XMLToArray(text) {
@@ -148,18 +209,102 @@ function XMLToArray(text) {
 	return tagArray;
 }
 
-function ArrayToJSON(tagArray) {
+function arrayMapping(tagArray, impNodes, impAttr) {  // parsing all the information inside the array
+	var mapArray = attrTrans(tagArray, impAttr);
+	if (impNodes.length) {
+		var extra = new Object();
+		extra.children = [];
+		extra.depth = 1;
+		extra.id = tagArray.length+1;
+		extra.parent = 1;
+		extra.type = "Extra";
+		tagArray.push(extra);
+		noMoreChildren = [];
+		var ifChild = false;
+		for (var i=0; i<tagArray.length-1; i++) {  // length - 1 because we want to exclude newly added tag 'Extra'
+			if (tagArray[i].depth == 1) {
+				ifChild = false;
+				for (var j=0; j<impNodes.length; j++) {
+					if (tagArray[i].type == impNodes[j]) {
+						ifChild = true;
+						break;
+					}
+				}
+				if (!ifChild) {
+					tagArray[i].parent = extra.id;
+					tagArray[tagArray.length-1].children.push(tagArray[i].id);
+					noMoreChildren.push(tagArray[i].id);
+				}
+			}
+		}
+		newRootChildren = [];
+		for (var i=0; i<tagArray[0].children.length; i++) {
+			var ifEqual = false;
+			for (var j=0; j<noMoreChildren.length; j++) {
+				if (tagArray[0].children[i] == noMoreChildren[j]) {
+					ifEqual = true;
+					break;
+				}
+			}
+			if (!ifEqual) {
+				newRootChildren.push(tagArray[0].children[i]);
+			}
+		}
+		tagArray[0].children = newRootChildren;
+		tagArray[0].children.push(extra.id);
+	}
+	return mapArray;
+}
+
+function attrTrans(tagArray, impAttr) {  // dealing with attributes of the objects
+	for (var i=0; i<tagArray.length; i++) {
+		var tagString = tagArray[i].tag;
+		var type = '';
+		var name = '';
+		var extra = '';
+		for (var j=0; j<tagString.length; j++) {
+			if (tagString[j] == ' ') {
+				break;
+			}
+			type += tagString[j];
+		}
+		var index = tagString.search('="') + 2;
+		if (index > 1) {
+			for (var j=index; j<tagString.length; j++) {
+				if (tagString[j] == '"') {
+					break;
+				}
+				name += tagString[j];
+			}
+			tagArray[i].name = name;
+			if (impAttr.length) {
+				if (tagString.search(impAttr) != -1) {
+					for (var j=tagString.search(impAttr[0]) + impAttr[0].length + 2; tagString[j] != '"'; j++) {
+						extra += tagString[j];
+					}
+				}
+			}
+			tagArray[i].extra = extra;
+		}
+		tagArray[i].type = type;
+	}
+	return tagArray;
+}
+
+function arrayToJSON(tagArray) {  // converting array to json type
 	var JSONText = [];
 	var root = new Object();				
-	root = ObjToJSON(tagArray, 0, false);
+	root = objToJSON(tagArray, 0, false);
 	JSONText.push(root);
 	return JSONText
 }
 			
-function ObjToJSON(tagArray, id, parent) {
+function objToJSON(tagArray, id, parent) {
 	var node = new Object();  // we create an empty object and save there all the relevant information about the node
-	node.name = tagArray[id].tag;
 	node.value = tagArray[id].value;
+	node.name = tagArray[id].name;
+	node.extra = tagArray[id].extra;
+	node.type = tagArray[id].type;
 	if (parent == false) {
 		node.parent = "null"
 	} else {
@@ -167,7 +312,7 @@ function ObjToJSON(tagArray, id, parent) {
 	}
 	node.children = [];
 	for (var i=0; i<tagArray[id].children.length; i++) {  // for all children of the node we do the same
-		node.children.push(ObjToJSON(tagArray, tagArray[id].children[i]-1, node));
+		node.children.push(objToJSON(tagArray, tagArray[id].children[i]-1, node));
 	}
 	return node
 }

@@ -1,14 +1,14 @@
 <HTML>
 	<head>
 		<link rel="stylesheet" href="css/style.css" type="text/css">
-		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="js/d3.js"></script>
 		<script src="js/xmltojson.js"></script>
 		<script src="js/jsontotree.js"></script>
 	</head>
 	<body>
 		<div class="chart1"></div>
 		<script>
-			xmltotree('chart1', 'example/ExampleTopology.xml')
+			xmltotree("chart1", 'example/example.xml', ["InstanceHierarchy", "InterfaceClassLib", "SystemUnitClassLib", "RoleClassLib"], ["SchemaVersion"], 0); // (div, file, additional, additional, ifJSON)
 		</script>
 	</body>
 </HTML>
