@@ -19,8 +19,8 @@
 		</InternalElement>
 		<InternalElement Name="secondScrewdriver" ID="{19dcf818-4716-4fc1-a85f-28e1938c4c3a}" RefBaseSystemUnitPath="LibOfCommonTools/ElectricScrewdriver">
 			<ExternalInterface Name="EnergySupply" ID="50e10905-ac18-413c-afab-ad8ed1569fff" RefBaseClassPath="MyInterfaces/Energy" />
-			<SupportedRoleClass RefRoleClassPath="ManufacturingRoleClasses/Tool" />
-			<RoleRequirements RefBaseRoleClassPath="ManufacturingRoleClasses/Tool" />
+			<SupportedRoleClass RefRoleClassPath="Manufacturing/Tool" />
+			<RoleRequirements RefBaseRoleClassPath="Manufacturing/Tool" />
 		</InternalElement>
 	</InstanceHierarchy>
 	<InterfaceClassLib Name="MyInterfaces">
