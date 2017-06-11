@@ -1,14 +1,18 @@
-<HTML>
+<html>
 	<head>
-		<link rel="stylesheet" href="css/style.css" type="text/css">
-		<script src="js/d3.js"></script>
-		<script src="js/xmltojson.js"></script>
-		<script src="js/jsontotree.js"></script>
+		<link rel="stylesheet" href="src/css/style.css" type="text/css">
+		<script src="src/xml2tree.min.js"></script>
 	</head>
 	<body>
 		<div class="chart1"></div>
 		<script>
-			xmltotree("chart1", 'example/example.xml', ["InstanceHierarchy", "InterfaceClassLib", "SystemUnitClassLib", "RoleClassLib"], ["SchemaVersion"], 0); // (div, file, additional, additional, ifJSON)
+			var elementId = 'chart1';
+			var filePath = 'example/example.xml';
+			var secondLevelNodes = [];
+			var isAttributes = true;
+			var isJSON = false;
+			
+			xml2tree(elementId, filePath, secondLevelNodes, isAttributes, isJSON);
 		</script>
 	</body>
-</HTML>
+</html>
