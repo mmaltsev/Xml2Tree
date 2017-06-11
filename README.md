@@ -40,13 +40,13 @@ You can find an XML file that is used below [here](example/example.xml).
 #### 1 Example Code:
 ```html
 <script>
-	var elementId = 'chart1';
-	var filePath = 'example/example.xml';
-	var secondLevelNodes = [];
-	var isAttributes = true;
-	var isJSON = false;
+  var elementId = 'chart1';
+  var filePath = 'example/example.xml';
+  var secondLevelNodes = [];
+  var isAttributes = true;
+  var isJSON = false;
 		
-	xml2tree(elementId, filePath, secondLevelNodes, isAttributes, isJSON);
+  xml2tree(elementId, filePath, secondLevelNodes, isAttributes, isJSON);
 </script>
 ```
 
@@ -56,13 +56,13 @@ You can find an XML file that is used below [here](example/example.xml).
 #### 2 Example Code:
 ```html
 <script>
-	var elementId = 'chart1';
-	var filePath = 'example/example.xml';
-	var secondLevelNodes = ['book'];
-	var isAttributes = false;
-	var isJSON = false;
-			
-	xml2tree(elementId, filePath, secondLevelNodes, isAttributes, isJSON);
+  var elementId = 'chart1';
+  var filePath = 'example/example.xml';
+  var secondLevelNodes = ['book'];
+  var isAttributes = false;
+  var isJSON = false;
+		
+  xml2tree(elementId, filePath, secondLevelNodes, isAttributes, isJSON);
 </script>
 ```
 
