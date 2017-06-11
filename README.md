@@ -8,7 +8,7 @@ Demo: https://mmaltsev.github.io/Xml2Tree/
 
 #### Add link to the library:
 ```html
-<script src="https://raw.githubusercontent.com/mmaltsev/Xml2Tree/master/src/xml2tree.min.js"></script>
+<script src="https://cdn.rawgit.com/mmaltsev/Xml2Tree/master/src/xml2tree.min.js"></script>
 ```
 
 #### Introduce a new div:
