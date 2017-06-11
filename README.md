@@ -11,7 +11,7 @@ Demo: https://mmaltsev.github.io/Xml2Tree/
 <script src="https://cdn.rawgit.com/mmaltsev/Xml2Tree/master/src/xml2tree.min.js"></script>
 ```
 
-#### Introduce a new div:
+#### Create new div element:
 ```html
 <div class="chart1"></div>
 ```
