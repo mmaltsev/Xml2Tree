@@ -1,0 +1,31 @@
+{
+  "name": "xml2tree",
+  "version": "1.0.0",
+  "description": "XML tree-like visualization library.",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mmaltsev/Xml2Tree.git"
+  },
+  "keywords": [
+    "XML",
+    "tree",
+    "converter"
+  ],
+  "author": "Maxim Maltsev <maltsevmn@ya.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mmaltsev/Xml2Tree/issues"
+  },
+  "homepage": "https://github.com/mmaltsev/Xml2Tree",
+  "devDependencies": {
+    "d3": "3.0.0",
+    "jsdoc": "3.4.3",
+    "uglify-js": "3.0.15"
+  },
+  "dependencies": {
+    "d3": "^3.0.0"
+  }
+}
