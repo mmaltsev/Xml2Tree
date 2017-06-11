@@ -1,6 +1,6 @@
-# [XML2Tree](https://github.com/mmaltsev/XML2Tree)
+# [Xml2Tree](https://github.com/mmaltsev/XML2Tree)
 
-XML2Tree is a library for visualizing XML data in the browser as a tree using d3.js.
+Xml2Tree is a library for visualizing XML data in the browser as a tree using d3.js.
 
 Demo: https://mmaltsev.github.io/Xml2Tree/
 
