@@ -4,6 +4,8 @@ Xml2Tree is a library for visualizing XML data in the browser as a tree using d3
 
 Demo: https://mmaltsev.github.io/Xml2Tree/
 
+Docs: https://mmaltsev.github.io/Xml2Tree/docs/
+
 ## Install
 
 #### Add link to the library:
