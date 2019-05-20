@@ -29,8 +29,8 @@ div > a > img {
 	height: 12%;
 }
 .node {
-      cursor: pointer;
-    }
+  cursor: pointer;
+}
 .node circle {
   fill: #00008b;
   stroke: black;
