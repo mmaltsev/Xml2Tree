@@ -37,7 +37,6 @@ function xml2tree(divClass, file, impNodes, isAttributes, isJSON) {
 		}
 		maxWidth += 1;
 		maxDepth = Math.max.apply(null, depthArray);
-		divClass = '.' + divClass;
 		drawTree(divClass, JSONText, maxDepth, maxWidth);
 	}
 }
@@ -371,7 +370,7 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 	var start = new Date().getTime();
 	var margin = {top: 20, right: 120, bottom: 20, left: 120},
 		width = maxWidth*400 - margin.right - margin.left,
-		height = maxDepth*50 - margin.top - margin.bottom;
+		height = maxDepth*100 - margin.top - margin.bottom;
 		
 	var i = 0,
 		duration = 750,
@@ -387,8 +386,8 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 	
 	var diagonal = d3.svg.diagonal()
 		.projection(function(d) { return [d.y, d.x]; });
-	
-	var svg = d3.select("body").append("svg")
+	console.log('selectString', '#' + selectString)
+	var svg = d3.select('#' + selectString).append("svg")
 		.attr("width", width + margin.right + margin.left)
 		.attr("height", height + margin.top + margin.bottom)
 	.append("g")
@@ -493,7 +492,8 @@ function drawTree(selectString, treeData, maxDepth, maxWidth) {
 			if (i == 0) { // if that's the first line - make it bold
 				d3.select(this).append("tspan")
 					.attr("style", "font-weight: bold")
-					.attr("dy",23)
+					.attr("dy",function(d) { 
+						return d.children || d._children ? 23 : 0; })
 					.attr("x",function(d) { 
 						return d.children || d._children ? -10 : 10; })
 					.text(lines[i])
